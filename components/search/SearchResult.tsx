@@ -17,6 +17,7 @@ interface SearchResultProps {
   asset: AssetData;
 }
 
+
 export default function SearchResult({ asset }: SearchResultProps) {
   const isPositive = asset.change24h >= 0;
 
