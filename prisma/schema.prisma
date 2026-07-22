@@ -1,0 +1,29 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User Model
+model User {
+  id        String      @id @default(cuid())
+  email     String      @unique
+  name      String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  watchlist Watchlist[]
+}
+
+// Crypto Watchlist Model
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  coinId    String   // e.g. "bitcoin", "ethereum"
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coinId])
+}
