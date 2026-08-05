@@ -1,191 +1,176 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { ResponsiveContainer, ComposedChart, Bar, XAxis, YAxis, ReferenceLine } from "recharts";
+import { useEffect, useState } from "react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-// Mock Data matching the 19:00 - 19:50 timeline with high/low/open/close + volume
-const generateChartData = () => {
-  const data = [];
-  const baseTimes = ["19:00", "19:10", "19:20", "19:30", "19:40", "19:50", "19:50"];
-  
-  for (let i = 0; i < 45; i++) {
-    const isGreen = Math.random() > 0.45;
-    const open = isGreen ? 25000 + Math.random() * 12000 : 28000 + Math.random() * 12000;
-    const close = isGreen ? open + Math.random() * 5000 : open - Math.random() * 5000;
-    const high = Math.max(open, close) + Math.random() * 3000;
-    const low = Math.min(open, close) - Math.random() * 3000;
-    const volume = 2000 + Math.random() * 8000;
+const AVAILABLE_COINS = [
+  { id: "bitcoin", name: "Bitcoin", symbol: "BTC" },
+  { id: "ethereum", name: "Ethereum", symbol: "ETH" },
+  { id: "binancecoin", name: "BNB", symbol: "BNB" },
+  { id: "solana", name: "Solana", symbol: "SOL" },
+  { id: "ripple", name: "XRP", symbol: "XRP" },
+];
 
-    // Distribute time labels across the X axis
-    let timeLabel = "";
-    if (i % 7 === 0) timeLabel = baseTimes[Math.floor(i / 7)] || "";
-
-    data.push({
-      time: timeLabel,
-      open,
-      close,
-      high,
-      low,
-      // Recharts trick: The bar renders from the bottom value to the top value
-      box: [open, close].sort((a, b) => a - b), 
-      wick: [low, high].sort((a, b) => a - b),
-      volume,
-      isGreen,
-    });
-  }
-  return data;
-};
-
-const data = generateChartData();
-const timeframes = ["1h", "3h", "1d", "1w", "1m"];
+const TIMEFRAMES = [
+  { label: "1h", days: "1" },
+  { label: "3h", days: "1" },
+  { label: "1d", days: "1" },
+  { label: "1w", days: "7" },
+  { label: "1m", days: "30" },
+];
 
 export default function ChartCard() {
-  const [activeTimeframe, setActiveTimeframe] = useState("1h");
+  const [selectedCoin, setSelectedCoin] = useState(AVAILABLE_COINS[0]);
+  const [activeTimeframe, setActiveTimeframe] = useState("1d");
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchChart() {
+      setLoading(true);
+      try {
+        const selectedTf = TIMEFRAMES.find((tf) => tf.label === activeTimeframe);
+        const days = selectedTf ? selectedTf.days : "1";
+
+        const res = await fetch(`/api/coins/${selectedCoin.id}/chart?days=${days}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.prices && Array.isArray(data.prices)) {
+            const formatted = data.prices.map(([timestamp, price]: [number, number]) => {
+              const date = new Date(timestamp);
+              const timeStr =
+                days === "1"
+                  ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                  : date.toLocaleDateString([], { month: "short", day: "numeric" });
+
+              return {
+                time: timeStr,
+                price: Number(price.toFixed(2)),
+              };
+            });
+
+            setChartData(formatted);
+
+            if (formatted.length > 0) {
+              setCurrentPrice(formatted[formatted.length - 1].price);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load chart data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchChart();
+  }, [selectedCoin, activeTimeframe]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto bg-[#161A1E] text-white rounded-2xl p-5 md:p-8 shadow-xl border border-gray-900 selection:bg-emerald-500/20">
-      
-      {/* Top Header Row */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-gray-100">Chart</h2>
-        
-        {/* Currency Selector */}
-        <button className="flex items-center space-x-2 bg-[#20262D] hover:bg-[#2B3139] text-sm font-medium px-3 py-1.5 rounded-lg transition border border-gray-800">
-          <span className="text-amber-500 font-bold text-xs bg-amber-500/10 w-5 h-5 rounded-full flex items-center justify-center">$</span>
-          <span className="text-gray-200">USD</span>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
-        </button>
-      </div>
+    <div className="bg-[#111622] border border-gray-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between max-h-[750px]">
 
-      {/* Asset Info & Timeframe Selectors Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        {/* Price Tracker */}
-        <div className="flex items-center space-x-4">
-          {/* Bitcoin Custom Brand Ring */}
-          <div className="w-12 h-12 bg-[#F39C12] rounded-full flex items-center justify-center shadow-lg shadow-orange-500/10 flex-shrink-0">
-            <span className="text-white font-extrabold text-2xl tracking-tighter">₿</span>
+      {/* Chart Header with Dropdown & Timeframe selector */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+
+        {/* Coin Selector Dropdown */}
+        <div>
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedCoin.id}
+              onChange={(e) => {
+                const coin = AVAILABLE_COINS.find((c) => c.id === e.target.value);
+                if (coin) setSelectedCoin(coin);
+              }}
+              className="bg-[#161A23] border border-gray-800 text-white font-bold text-lg rounded-lg px-3 py-1 focus:outline-none focus:border-green-500 cursor-pointer"
+            >
+              {AVAILABLE_COINS.map((coin) => (
+                <option key={coin.id} value={coin.id} className="bg-[#111622] text-white">
+                  {coin.name} ({coin.symbol})
+                </option>
+              ))}
+            </select>
           </div>
-          <div>
-            <div className="flex items-center space-x-1 cursor-pointer group">
-              <span className="text-sm font-medium text-[#848E9C] group-hover:text-gray-300 transition">Bitcoin/BTC</span>
-              <ChevronDown className="w-4 h-4 text-[#848E9C] group-hover:text-gray-300 transition" />
-            </div>
-            <div className="text-2xl md:text-3xl font-bold tracking-tight mt-0.5">$35.352.02</div>
-          </div>
+
+          <h2 className="text-3xl font-extrabold text-white font-mono mt-2">
+            {currentPrice !== null ? `$${currentPrice.toLocaleString()}` : "$0.00"}
+          </h2>
         </div>
 
-        {/* Timeframe Toggles */}
-        <div className="flex items-center bg-[#1E2329] p-1 rounded-xl self-start sm:self-center border border-gray-800">
-          {timeframes.map((tf) => (
+        {/* Timeframe Selector Buttons */}
+        <div className="flex items-center gap-1.5 bg-[#161A23] p-1.5 rounded-xl border border-gray-800">
+          {TIMEFRAMES.map((tf) => (
             <button
-              key={tf}
-              onClick={() => setActiveTimeframe(tf)}
-              className={`px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 ${
-                activeTimeframe === tf
-                  ? "bg-[#64DF36] text-black font-semibold shadow-md"
-                  : "text-[#848E9C] hover:text-white"
-              }`}
+              key={tf.label}
+              onClick={() => setActiveTimeframe(tf.label)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTimeframe === tf.label
+                  ? "bg-[#22C55E] text-black shadow-md font-bold"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+                }`}
             >
-              {tf}
+              {tf.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Main Responsive Chart Workspace */}
-      <div className="h-[320px] md:h-[400px] w-full relative">
-        
-        {/* Absolute-positioned Target Price Badge ($34K Line) */}
-        <div className="absolute right-0 top-[48.5%] transform -translate-y-1/2 z-10 hidden sm:block">
-          <span className="bg-[#64DF36] text-black text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-            $34K
-          </span>
-        </div>
-
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={data} margin={{ top: 10, right: 45, left: -10, bottom: 0 }}>
-            {/* X-Axis labels */}
-            <XAxis 
-              dataKey="time" 
-              tickLine={false} 
-              axisLine={false}
-              tick={{ fill: "#848E9C", fontSize: 12, fontWeight: 500 }}
-              dy={15}
-            />
-            {/* Y-Axis numbers */}
-            <YAxis 
-              domain={[10000, 55000]} 
-              tickCount={5}
-              tickFormatter={(v) => `${(v / 1000).toFixed(3)}`}
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: "#848E9C", fontSize: 12, fontWeight: 500 }}
-              orientation="left"
-            />
-
-            {/* Target Price Dashed Reference Line */}
-            <ReferenceLine 
-              y={31000} 
-              stroke="#848E9C" 
-              strokeDasharray="4 4" 
-              strokeWidth={1.2}
-            />
-
-            {/* Candle Wicks (High/Low Lines) */}
-            <Bar
-              dataKey="wick"
-              fill="none"
-              stroke="#475569"
-              radius={0}
-              xAxisId={0}
-              className="opacity-40"
-            />
-
-            {/* Candle Bodies (Open/Close Bars) */}
-            <Bar
-              dataKey="box"
-              shape={(props: any) => {
-                const { x, y, width, height, payload } = props;
-                const fill = payload.isGreen ? "#64DF36" : "#E15241";
-                return (
-                  <rect
-                    x={x + width * 0.15}
-                    y={y}
-                    width={width * 0.7}
-                    height={height}
-                    fill={fill}
-                    rx={2}
-                  />
-                );
-              }}
-            />
-
-            {/* Volume Graph Overlay at the bottom */}
-            <Bar
-              dataKey="volume"
-              fill="#2B3139"
-              opacity={0.35}
-              shape={(props: any) => {
-                const { x, y, width, height } = props;
-                // Keep the volume bars restricted strictly to the base of the container
-                const chartHeight = 400; 
-                const barHeight = Math.min(height * 0.15, 30);
-                return (
-                  <rect
-                    x={x + width * 0.25}
-                    y={y + height - barHeight}
-                    width={width * 0.5}
-                    height={barHeight}
-                    fill="#2B3139"
-                    rx={1}
-                  />
-                );
-              }}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
+      {/* Chart Canvas Area */}
+      <div className="h-[300px] w-full">
+        {loading ? (
+          <div className="h-full flex items-center justify-center text-gray-500 text-sm animate-pulse">
+            Loading chart data...
+          </div>
+        ) : chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#22C55E" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="time" stroke="#4B5563" fontSize={11} tickLine={false} />
+              <YAxis
+                domain={["auto", "auto"]}
+                stroke="#4B5563"
+                fontSize={11}
+                tickLine={false}
+                orientation="right"
+                tickFormatter={(val) => `$${val.toLocaleString()}`}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#161A23",
+                  borderColor: "#374151",
+                  borderRadius: "8px",
+                  color: "#fff",
+                }}
+                formatter={(val: any) => [`$${Number(val).toLocaleString()}`, "Price"]}
+              />
+              <Area
+                type="monotone"
+                dataKey="price"
+                stroke="#22C55E"
+                strokeWidth={2}
+                fillOpacity={1}
+                fill="url(#colorPrice)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-full flex items-center justify-center text-gray-500 text-sm">
+            No chart data available.
+          </div>
+        )}
       </div>
+
     </div>
   );
 }

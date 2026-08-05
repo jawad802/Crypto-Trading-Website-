@@ -6,11 +6,21 @@ import CoinCards from './CoinCards'
 const Dashboard = () => {
     return (
         <div className='mt-8'>
-            <div className=' gap-6 lg:gap-0 md:flex '>
-                <ChartCard />
-                <TopMovers/>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Chart takes up 2 columns on large screens */}
+                <div className="lg:col-span-2 lg:mt-30">
+                    <ChartCard />
+                </div>
+
+                {/* Top mover small cards take up 1 column on large screens */}
+                <div className="lg:col-span-1">
+                    <TopMovers />
+                </div>
             </div>
-            <CoinCards/>
+            <div className='mt-5 p-8'>
+                <h1 className='font-bold text-2xl '>Top Coins</h1>
+                <CoinCards />
+            </div>
         </div>
     )
 }
