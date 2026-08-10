@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
-/*  */
 
 
 @theme {
@@ -8,12 +7,14 @@
   --font-sans: "Google Sans", ui-sans-serif, system-ui, sans-serif;
 
   /* OPTIONAL: If you only want to use it sometimes, name it something else like --font-google */
-  /* --font-google: "Google Sans", sans-serif; */
+  
 }
-
-
 
 html,
 body {
   overflow-x: hidden;
+  background-color: #F8FAFC !important;
+  /* Soft slate white */
+  color: #0F172A;
+  /* Dark text */
 }

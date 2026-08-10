@@ -16,29 +16,29 @@ export default function TokenRow({ coin }: TokenRowProps) {
   };
 
   return (
-    <tr className="border-b border-gray-800/50 hover:bg-[#1f232b] transition-colors">
+    <tr className="border-b border-slate-200/50 hover:bg-slate-50 transition-colors">
       <td className="py-4 px-6">
         <Link href={`/coin/${coin.id}`} className="flex items-center gap-3 group">
           <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
           <div>
-            <p className="font-semibold group-hover:text-green-400 transition-colors">
+            <p className="font-semibold group-hover:text-[#10B981] transition-colors text-slate-900">
               {coin.name}
             </p>
-            <p className="text-xs text-gray-400 uppercase">{coin.symbol}</p>
+            <p className="text-xs text-slate-500 uppercase">{coin.symbol}</p>
           </div>
         </Link>
       </td>
 
-      <td className="py-4 px-6 font-medium">
+      <td className="py-4 px-6 font-medium text-slate-900">
         ${coin.current_price?.toLocaleString()}
       </td>
 
-      <td className={`py-4 px-6 font-medium ${isPositive ? "text-green-400" : "text-red-400"}`}>
+      <td className={`py-4 px-6 font-medium ${isPositive ? "text-[#10B981]" : "text-[#F14D4D]"}`}>
         {isPositive ? "+" : ""}
         {coin.price_change_percentage_24h?.toFixed(2)}%
       </td>
 
-      <td className="py-4 px-6 font-medium text-gray-300">
+      <td className="py-4 px-6 font-medium text-slate-500">
         {formatMarketCap(coin.market_cap)}
       </td>
     </tr>

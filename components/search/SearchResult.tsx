@@ -24,25 +24,25 @@ export default function SearchResult({ asset }: SearchResultProps) {
   return (
     <div
       className={`flex items-center justify-between px-4 py-3.5 rounded-xl cursor-pointer transition-all duration-150 ${asset.isSelected
-        ? "bg-[#1B233A] border border-blue-900/40"
-        : "hover:bg-[#1E2329]/30"
+        ? "bg-slate-100 border border-slate-300"
+        : "hover:bg-slate-50"
         }`}
     >
       {/* Left Column: Icon + Identifiers */}
       <div className="flex items-center space-x-3.5">
-        <div className={`w-9 h-9 ${asset.iconBg} rounded-full flex items-center justify-center font-bold text-base text-white flex-shrink-0 shadow-sm`}>
+        <div className={`w-9 h-9 ${asset.iconBg} rounded-full flex items-center justify-center font-bold text-base text-slate-900 flex-shrink-0 shadow-sm`}>
           {asset.iconSymbol}
         </div>
-        <span className="text-sm font-semibold text-gray-100">
-          {asset.name} <span className="text-gray-400 font-medium text-xs ml-0.5">({asset.symbol})</span>
+        <span className="text-sm font-semibold text-slate-900">
+          {asset.name} <span className="text-slate-500 font-medium text-xs ml-0.5">({asset.symbol})</span>
         </span>
       </div>
 
       {/* Right Column: Price Valuation & 24h Metrics */}
       <div className="flex items-center space-x-6 text-right">
-        <span className="text-sm font-bold text-white font-mono">{asset.price}</span>
+        <span className="text-sm font-bold text-slate-900 font-mono">{asset.price}</span>
         <div
-          className={`flex items-center space-x-0.5 text-xs font-bold w-[72px] justify-end ${isPositive ? "text-[#39E11B]" : "text-[#F14D4D]"
+          className={`flex items-center space-x-0.5 text-xs font-bold w-[72px] justify-end ${isPositive ? "text-[#10B981]" : "text-[#F14D4D]"
             }`}
         >
           {isPositive ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}

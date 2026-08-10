@@ -16,30 +16,30 @@ const mockOrderBook = {
 
 export default function OrderBook() {
   return (
-    <div className="bg-[#161A1E] border border-gray-800 rounded-2xl p-6">
-      <h3 className="text-sm font-bold text-gray-200 tracking-wide mb-4">Order Book</h3>
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <h3 className="text-sm font-bold text-slate-900 tracking-wide mb-4">Order Book</h3>
 
       <div className="w-full">
-        <div className="grid grid-cols-3 text-[11px] font-bold text-gray-500 tracking-wider uppercase pb-2 border-b border-gray-800">
+        <div className="grid grid-cols-3 text-[11px] font-bold text-slate-500 tracking-wider uppercase pb-2 border-b border-slate-200">
           <span>Price (BTC)</span>
           <span className="text-center">Amount (BTC)</span>
           <span className="text-right">Amount (ETH)</span>
         </div>
 
-        <div className="divide-y divide-gray-800/30 font-mono text-xs mt-1.5 space-y-0.5">
+        <div className="divide-y divide-slate-200/30 font-mono text-xs mt-1.5 space-y-0.5">
           {mockOrderBook.bids.map((bid, i) => (
-            <div key={`bid-${i}`} className="grid grid-cols-3 py-2.5 bg-[#39E11B]/5 px-2 rounded-lg text-[#39E11B] font-bold">
+            <div key={`bid-${i}`} className="grid grid-cols-3 py-2.5 bg-[#10B981]/10 px-2 rounded-lg text-[#10B981] font-bold">
               <span>{bid.price}</span>
-              <span className="text-center text-gray-400 font-medium">{bid.amountBTC}</span>
-              <span className="text-right text-gray-400 font-medium">{bid.amountETH}</span>
+              <span className="text-center text-slate-500 font-medium">{bid.amountBTC}</span>
+              <span className="text-right text-slate-500 font-medium">{bid.amountETH}</span>
             </div>
           ))}
 
           {mockOrderBook.asks.map((ask, i) => (
-            <div key={`ask-${i}`} className="grid grid-cols-3 py-2.5 bg-[#F14D4D]/5 px-2 rounded-lg text-[#F14D4D] font-bold">
+            <div key={`ask-${i}`} className="grid grid-cols-3 py-2.5 bg-[#F14D4D]/10 px-2 rounded-lg text-[#F14D4D] font-bold">
               <span>{ask.price}</span>
-              <span className="text-center text-gray-400 font-medium">{ask.amountBTC}</span>
-              <span className="text-right text-gray-400 font-medium">{ask.amountETH}</span>
+              <span className="text-center text-slate-500 font-medium">{ask.amountBTC}</span>
+              <span className="text-right text-slate-500 font-medium">{ask.amountETH}</span>
             </div>
           ))}
         </div>

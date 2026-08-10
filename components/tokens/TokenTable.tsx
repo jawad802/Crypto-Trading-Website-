@@ -49,14 +49,14 @@ export default function TokenTable() {
     }, [page]);
 
     return (
-        <div className="min-h-screen bg-[#0d0f12] text-white p-8">
+        <div className="min-h-screen bg-slate-50 text-slate-900 p-8">
             <div className="max-w-6xl mx-auto">
                 <h1 className="text-2xl font-bold mb-6">All Tokens</h1>
 
-                <div className="bg-[#16191e] rounded-xl overflow-hidden border border-gray-800 shadow-xl">
+                <div className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wider">
+                            <tr className="border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider">
                                 <th className="py-4 px-6">Token</th>
                                 <th className="py-4 px-6">Price</th>
                                 <th className="py-4 px-6">24h Change</th>
@@ -67,7 +67,7 @@ export default function TokenTable() {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={4} className="py-12 text-center text-gray-400">
+                                    <td colSpan={4} className="py-12 text-center text-slate-500">
                                         Loading tokens...
                                     </td>
                                 </tr>

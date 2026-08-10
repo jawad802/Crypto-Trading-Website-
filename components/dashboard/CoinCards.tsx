@@ -39,7 +39,7 @@ export default function CoinCards({ coins: initialCoins }: CoinCardProps) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-[#111622] border border-gray-800/80 rounded-2xl p-5 h-36 animate-pulse" />
+          <div key={i} className="bg-white border border-slate-200/80 rounded-2xl p-5 h-36 animate-pulse shadow-sm" />
         ))}
       </div>
     );
@@ -54,15 +54,15 @@ export default function CoinCards({ coins: initialCoins }: CoinCardProps) {
           <Link
             key={coin.id}
             href={`/coin/${coin.id}`}
-            className="bg-[#111622] border border-gray-800/80 hover:border-gray-700 rounded-2xl p-5 shadow-lg transition-all hover:-translate-y-1 block"
+            className="bg-white border border-slate-200/80 hover:border-slate-300 rounded-2xl p-5 shadow-sm transition-all hover:-translate-y-1 block"
           >
             <div className="flex items-center gap-3 mb-4">
               {coin.image && (
                 <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
               )}
               <div>
-                <h3 className="font-bold text-white text-sm">{coin.name}</h3>
-                <span className="text-xs text-gray-400 uppercase">{coin.symbol}</span>
+                <h3 className="font-bold text-slate-900 text-sm">{coin.name}</h3>
+                <span className="text-xs text-slate-500 uppercase">{coin.symbol}</span>
               </div>
             </div>
 
@@ -78,8 +78,8 @@ export default function CoinCards({ coins: initialCoins }: CoinCardProps) {
               </svg>
             </div>
 
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-800/60">
-              <span className="font-mono font-bold text-white text-base">
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200/60">
+              <span className="font-mono font-bold text-slate-900 text-base">
                 ${coin.current_price?.toLocaleString()}
               </span>
 

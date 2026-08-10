@@ -75,7 +75,7 @@ export default function ChartCard() {
   }, [selectedCoin, activeTimeframe]);
 
   return (
-    <div className="bg-[#111622] border border-gray-800/80 rounded-2xl p-6 shadow-xl flex flex-col justify-between max-h-[750px]">
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between max-h-[750px]">
 
       {/* Chart Header with Dropdown & Timeframe selector */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -89,30 +89,30 @@ export default function ChartCard() {
                 const coin = AVAILABLE_COINS.find((c) => c.id === e.target.value);
                 if (coin) setSelectedCoin(coin);
               }}
-              className="bg-[#161A23] border border-gray-800 text-white font-bold text-lg rounded-lg px-3 py-1 focus:outline-none focus:border-green-500 cursor-pointer"
+              className="bg-white border border-slate-200 text-slate-900 font-bold text-lg rounded-lg px-3 py-1 focus:outline-none focus:border-[#10B981] cursor-pointer"
             >
               {AVAILABLE_COINS.map((coin) => (
-                <option key={coin.id} value={coin.id} className="bg-[#111622] text-white">
+                <option key={coin.id} value={coin.id} className="bg-white text-slate-900">
                   {coin.name} ({coin.symbol})
                 </option>
               ))}
             </select>
           </div>
 
-          <h2 className="text-3xl font-extrabold text-white font-mono mt-2">
+          <h2 className="text-3xl font-extrabold text-slate-900 font-mono mt-2">
             {currentPrice !== null ? `$${currentPrice.toLocaleString()}` : "$0.00"}
           </h2>
         </div>
 
         {/* Timeframe Selector Buttons */}
-        <div className="flex items-center gap-1.5 bg-[#161A23] p-1.5 rounded-xl border border-gray-800">
+        <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-slate-200">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf.label}
               onClick={() => setActiveTimeframe(tf.label)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTimeframe === tf.label
-                  ? "bg-[#22C55E] text-black shadow-md font-bold"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+                  ? "bg-[#10B981] text-black shadow-md font-bold"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
             >
               {tf.label}
@@ -124,7 +124,7 @@ export default function ChartCard() {
       {/* Chart Canvas Area */}
       <div className="h-[300px] w-full">
         {loading ? (
-          <div className="h-full flex items-center justify-center text-gray-500 text-sm animate-pulse">
+          <div className="h-full flex items-center justify-center text-slate-500 text-sm animate-pulse">
             Loading chart data...
           </div>
         ) : chartData.length > 0 ? (
@@ -136,10 +136,10 @@ export default function ChartCard() {
                   <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="time" stroke="#4B5563" fontSize={11} tickLine={false} />
+              <XAxis dataKey="time" stroke="#64748B" fontSize={11} tickLine={false} />
               <YAxis
                 domain={["auto", "auto"]}
-                stroke="#4B5563"
+                stroke="#64748B"
                 fontSize={11}
                 tickLine={false}
                 orientation="right"
@@ -147,10 +147,10 @@ export default function ChartCard() {
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#161A23",
-                  borderColor: "#374151",
+                  backgroundColor: "#ffffff",
+                  borderColor: "#E5E7EB",
                   borderRadius: "8px",
-                  color: "#fff",
+                  color: "#0F172A",
                 }}
                 formatter={(val: any) => [`$${Number(val).toLocaleString()}`, "Price"]}
               />
@@ -165,7 +165,7 @@ export default function ChartCard() {
             </AreaChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-full flex items-center justify-center text-gray-500 text-sm">
+          <div className="h-full flex items-center justify-center text-slate-500 text-sm">
             No chart data available.
           </div>
         )}

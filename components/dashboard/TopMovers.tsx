@@ -24,27 +24,27 @@ export default function TopMovers() {
   }, []);
 
   if (loading) {
-    return <div className="p-4 text-gray-400">Loading live market data...</div>;
+    return <div className="p-4 text-slate-500">Loading live market data...</div>;
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {coins.map((coin) => (
         <Link key={coin.id} href={`/coin/${coin.id}`} className="block">
-          <div className="p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-gray-700 transition cursor-pointer">
+          <div className="p-4 bg-white rounded-xl border border-slate-200 hover:border-slate-300 transition cursor-pointer shadow-sm">
             <div className="flex items-center gap-3">
               <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
               <div>
-                <h3 className="font-semibold text-white">{coin.name}</h3>
-                <p className="text-sm text-gray-400 uppercase">{coin.symbol}</p>
+                <h3 className="font-semibold text-slate-900">{coin.name}</h3>
+                <p className="text-sm text-slate-500 uppercase">{coin.symbol}</p>
               </div>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <span className="text-lg font-bold text-white">
+              <span className="text-lg font-bold text-slate-900">
                 ${coin.current_price?.toLocaleString()}
               </span>
               <span
-                className={`text-sm font-semibold ${coin.price_change_percentage_24h >= 0 ? "text-green-500" : "text-red-500"
+                className={`text-sm font-semibold ${coin.price_change_percentage_24h >= 0 ? "text-[#10B981]" : "text-[#F14D4D]"
                   }`}
               >
                 {coin.price_change_percentage_24h >= 0 ? "+" : ""}

@@ -44,8 +44,8 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#0B0E11] text-white px-4">
-            <div className="w-full max-w-md p-8 bg-[#181A20] rounded-2xl border border-gray-800 shadow-xl">
+            <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-slate-50 text-slate-900 px-4">
+                <div className="w-full max-w-md p-8 bg-white rounded-2xl border border-slate-200 shadow-sm">
                 <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
 
                 {error && (
@@ -56,37 +56,37 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                        <label className="block text-sm font-medium text-slate-500 mb-1">Name</label>
                         <input
                             type="text"
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-[#0B0E11] border border-gray-800 rounded-lg focus:outline-none focus:border-[#39E11B] text-white"
+                                className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#10B981] text-slate-900"
                             placeholder="John Doe"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-slate-500 mb-1">Email</label>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-[#0B0E11] border border-gray-800 rounded-lg focus:outline-none focus:border-[#39E11B] text-white"
+                                className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#10B981] text-slate-900"
                             placeholder="name@example.com"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                        <label className="block text-sm font-medium text-slate-500 mb-1">Password</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-[#0B0E11] border border-gray-800 rounded-lg focus:outline-none focus:border-[#39E11B] text-white"
+                                className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-[#10B981] text-slate-900"
                             placeholder="••••••••"
                         />
                     </div>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-sm text-gray-400">
+                <p className="mt-6 text-center text-sm text-slate-500">
                     Already have an account?{" "}
                     <Link href="/login" className="text-[#39E11B] hover:underline font-medium">
                         Log In

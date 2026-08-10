@@ -9,15 +9,15 @@ export default function SearchPageRoute() {
   const [modalOpen, setModalOpen] = useState(true);
 
   return (
-    <div className="min-h-screen bg-[#0B0E11] flex flex-col items-center justify-center text-center p-4 text-white font-sans">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-center p-4 text-slate-900 font-sans">
       <div className="max-w-md">
-        <h1 className="text-2xl font-bold mb-2 text-gray-100">Search Workspace Terminal</h1>
-        <p className="text-gray-400 text-sm mb-6">
+        <h1 className="text-2xl font-bold mb-2 text-slate-900">Search Workspace Terminal</h1>
+        <p className="text-slate-500 text-sm mb-6">
           The Search bar overlay can be triggered directly using the button below or by using Navbar controls.
         </p>
         <button
           onClick={() => setModalOpen(true)}
-          className="bg-gray-800 hover:bg-gray-700 border border-gray-700/60 text-white font-medium px-5 py-2.5 rounded-xl transition shadow-md"
+          className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-900 font-medium px-5 py-2.5 rounded-xl transition shadow-sm"
         >
           Open Search Panel
         </button>
