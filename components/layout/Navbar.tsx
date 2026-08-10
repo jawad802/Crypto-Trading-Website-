@@ -1,29 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X, LogOut, ChevronDown } from "lucide-react";
 import SearchBar from "@/components/search/SearchBar";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Search", href: "#" }, // Changed to '#' since we handle it with onClick state now
+  { name: "Search", href: "#" },
   { name: "Tokens", href: "/tokens" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  // 2. Add the state to track if the search popup modal is open
   const [searchOpen, setSearchOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [hasRegistered, setHasRegistered] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const pathname = usePathname();
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch logged in user state & check registration flag
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setHasRegistered(localStorage.getItem("hasRegistered") === "true");
+    }
+
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data.user);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setUser(null);
+    setDropdownOpen(false);
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
-    <nav className="w-full bg-[#0B0E11] border-b border-gray-800 text-white font-sans selection:bg-emerald-500/30">
+    <nav className="w-full bg-[#0B0E11] border-b border-gray-800 text-white font-sans selection:bg-[#39E11B]/30 relative z-50">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between h-20">
 
-          {/* Logo Brand Section */}
+          {/* Logo Brand */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#39E11B] bg-transparent">
               <svg
@@ -41,15 +81,15 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
+          {/* Nav Links */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
 
-              // 3. IF the link is "Search", render a click action button instead of an anchor page navigation route
               if (link.name === "Search") {
                 return (
                   <button
+                  type="button"
                     key={link.name}
                     onClick={() => setSearchOpen(true)}
                     className="text-base font-medium transition-colors duration-200 text-[#848E9C] hover:text-white focus:outline-none"
@@ -59,7 +99,6 @@ export default function Navbar() {
                 );
               }
 
-              // Normal route links for Home and Tokens
               return (
                 <Link
                   key={link.name}
@@ -73,6 +112,70 @@ export default function Navbar() {
             })}
           </div>
 
+          {/* User Profile / Auth Action */}
+          <div className="hidden md:flex items-center space-x-4">
+            {!loading && (
+              user ? (
+                /* STATE 1: Logged in user -> Show avatar & dropdown */
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                  type="button"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center space-x-3 p-1.5 rounded-full hover:bg-gray-800/60 transition-colors focus:outline-none"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-[#39E11B]/20 border border-[#39E11B] flex items-center justify-center text-[#39E11B] font-bold text-sm">
+                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <span className="text-sm font-medium text-gray-200">{user.name}</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {/* Profile Dropdown */}
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-[#181A20] border border-gray-800 rounded-xl shadow-2xl py-2 z-50">
+                      <div className="px-4 py-2 border-b border-gray-800">
+                        <p className="text-xs text-gray-400">Signed in as</p>
+                        <p className="text-sm font-semibold text-white truncate">{user.email}</p>
+                      </div>
+                      <button
+                      type="button"
+                        onClick={handleLogout}
+                        className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Log Out</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : hasRegistered ? (
+                /* STATE 2: Logged out BUT registered user -> Show ONLY Log In */
+                <Link
+                  href="/login"
+                  className="px-5 py-2 text-sm font-semibold text-black bg-[#39E11B] rounded-lg hover:bg-[#32cb17] transition-all duration-200 shadow-lg shadow-[#39E11B]/20"
+                >
+                  Log In
+                </Link>
+              ) : (
+                /* STATE 3: First-time visitor -> Show BOTH buttons */
+                <div className="flex items-center space-x-3">
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 text-sm font-semibold text-black bg-[#39E11B] rounded-lg hover:bg-[#32cb17] transition-all duration-200 shadow-lg shadow-[#39E11B]/20"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )
+            )}
+          </div>
+
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
@@ -80,53 +183,12 @@ export default function Navbar() {
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-[#848E9C] hover:text-white focus:outline-none"
             >
-              <span className="sr-only">Open main menu</span>
               {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      <div
-        className={`md:hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-60 opacity-100 border-t border-gray-800" : "max-h-0 opacity-0 overflow-hidden"
-          }`}
-      >
-        <div className="px-4 pt-2 pb-4 space-y-2 bg-[#0B0E11]">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-
-            if (link.name === "Search") {
-              return (
-                <button
-                  key={link.name}
-                  onClick={() => {
-                    setIsOpen(false);   // Closes mobile menu burger drawer layout
-                    setSearchOpen(true); // Opens search popup modal interface panel
-                  }}
-                  className="block w-full text-left px-3 py-2.5 rounded-md text-base font-medium text-[#848E9C] hover:bg-gray-900 hover:text-white transition-colors"
-                >
-                  {link.name}
-                </button>
-              );
-            }
-
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2.5 rounded-md text-base font-medium transition-colors ${isActive ? "bg-gray-900 text-white" : "text-[#848E9C] hover:bg-gray-900 hover:text-white"
-                  }`}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 4. Placed the component portal layer template configurations exactly at the base root of the navbar wrapper */}
       <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </nav>
   );
