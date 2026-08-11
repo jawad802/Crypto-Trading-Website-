@@ -1,63 +1,68 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken } from "@/lib/jwt";
-import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
-async function getUserId(): Promise<string | null> {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+async function getUserId(req: NextRequest): Promise<string | null> {
+    const token = req.cookies.get("token")?.value;
     if (!token) return null;
 
-    const decoded = await verifyToken(token);
-    if (!decoded || typeof decoded.userId !== "string") return null;
-
-    return decoded.userId;
+    try {
+        const secret = process.env.JWT_SECRET || "fallback-secret-key";
+        const decoded = jwt.verify(token, secret) as { userId: string };
+        return decoded.userId;
+    } catch {
+        return null;
+    }
 }
 
 // GET user's saved watchlist coin IDs
-export async function GET() {
-    const userId = await getUserId();
+export async function GET(req: NextRequest) {
+    const userId = await getUserId(req);
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const watchlist = await prisma.watchlist.findMany({
         where: { userId },
-        select: { coinId: true },
+        select: { coinId: true, coinSymbol: true, coinName: true },
     });
 
-    return NextResponse.json({ watchlist: watchlist.map((item) => item.coinId) });
+    return NextResponse.json({ watchlist });
 }
 
 // POST: Add or Remove coin from watchlist (Toggle)
-export async function POST(req: Request) {
-    const userId = await getUserId();
+export async function POST(req: NextRequest) {
+    const userId = await getUserId(req);
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const coinId = body?.coinId;
+    const { coinId, coinSymbol, coinName } = body;
 
     if (!coinId || typeof coinId !== "string") {
-        return NextResponse.json({ error: "Valid Coin ID required" }, { status: 400 });
+        return NextResponse.json({ error: "Invalid coinId" }, { status: 400 });
     }
 
-    const existing = await prisma.watchlist.findUnique({
+    // Check if coin is already in watchlist
+    const existingItem = await prisma.watchlist.findUnique({
         where: {
-            userId_coinId: {
-                userId: userId,
-                coinId: coinId,
-            },
+            userId_coinId: { userId, coinId },
         },
     });
 
-    if (existing) {
-        await prisma.watchlist.delete({ where: { id: existing.id } });
-        return NextResponse.json({ saved: false, message: "Removed from watchlist" });
+    if (existingItem) {
+        // If exists -> Remove it
+        await prisma.watchlist.delete({
+            where: { id: existingItem.id },
+        });
+        return NextResponse.json({ message: "Removed from watchlist", added: false });
     } else {
+        // If doesn't exist -> Add it
         await prisma.watchlist.create({
             data: {
-                userId: userId,
-                coinId: coinId,
+                userId,
+                coinId,
+                coinSymbol: coinSymbol || coinId.toUpperCase(),
+                coinName: coinName || coinId,
             },
         });
-        return NextResponse.json({ saved: true, message: "Added to watchlist" });
+        return NextResponse.json({ message: "Added to watchlist", added: true });
     }
 }

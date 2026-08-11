@@ -13,7 +13,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Top mover small cards take up 1 column on large screens */}
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 md:mt-30">
                     <TopMovers />
                 </div>
             </div>

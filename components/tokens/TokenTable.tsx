@@ -19,20 +19,15 @@ export default function TokenTable() {
             setErrorMsg("");
 
             try {
-                // Option A: Use your internal proxy route `/api/tokens?page=${page}` if built
-                // Option B: Direct fetch from CoinGecko
-                const res = await fetch(
-                    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&page=${page}&sparkline=false`
-                );
-
-                if (!res.ok) {
-                    if (res.status === 429) {
-                        throw new Error("Rate limit exceeded! Please wait a few seconds before clicking next.");
-                    }
-                    throw new Error("Failed to fetch token markets.");
-                }
+                // Fetch from internal Next.js backend proxy route with server-side caching
+                const res = await fetch(`/api/coins?page=${page}&perPage=${perPage}`);
 
                 const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to fetch token markets.");
+                }
+
                 if (isMounted) setCoins(data);
             } catch (err: any) {
                 if (isMounted) setErrorMsg(err.message || "An error occurred");
@@ -73,7 +68,7 @@ export default function TokenTable() {
                                 </tr>
                             ) : errorMsg ? (
                                 <tr>
-                                    <td colSpan={4} className="py-12 text-center text-amber-400 font-medium">
+                                    <td colSpan={4} className="py-12 text-center text-amber-500 font-medium">
                                         {errorMsg}
                                     </td>
                                 </tr>
@@ -84,7 +79,6 @@ export default function TokenTable() {
                     </table>
                 </div>
 
-                {/* PASS LOADING STATE TO PAGINATION */}
                 <Pagination page={page} setPage={setPage} loading={loading} />
             </div>
         </div>

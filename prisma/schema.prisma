@@ -20,11 +20,14 @@ model User {
 
 // Crypto Watchlist Model
 model Watchlist {
-  id        String   @id @default(cuid())
-  userId    String
-  coinId    String   // e.g. "bitcoin", "ethereum"
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  userId     String
+  coinId     String   // e.g. "bitcoin", "ethereum"
+  coinSymbol String   // e.g. "BTC", "ETH"
+  coinName   String   // e.g. "Bitcoin"
+  createdAt  DateTime @default(now())
 
-  @@unique([userId, coinId])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coinId]) // Prevents duplicate coins in a user's watchlist
 }

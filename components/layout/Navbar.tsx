@@ -3,13 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown, Bookmark } from "lucide-react";
 import SearchBar from "@/components/search/SearchBar";
 
+// 1. Added Watchlist link to main navigation array
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Search", href: "#" },
   { name: "Tokens", href: "/tokens" },
+  { name: "Watchlist", href: "/watchlist" },
 ];
 
 export default function Navbar() {
@@ -89,7 +91,7 @@ export default function Navbar() {
               if (link.name === "Search") {
                 return (
                   <button
-                  type="button"
+                    type="button"
                     key={link.name}
                     onClick={() => setSearchOpen(true)}
                     className="text-base font-medium transition-colors duration-200 text-slate-500 hover:text-slate-900 focus:outline-none"
@@ -103,7 +105,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`text-base font-medium transition-colors duration-200 hover:text-slate-900 ${isActive ? "text-slate-900" : "text-slate-500"
+                  className={`text-base font-medium transition-colors duration-200 hover:text-slate-900 ${isActive ? "text-slate-900 font-semibold" : "text-slate-500"
                     }`}
                 >
                   {link.name}
@@ -119,7 +121,7 @@ export default function Navbar() {
                 /* STATE 1: Logged in user -> Show avatar & dropdown */
                 <div className="relative" ref={dropdownRef}>
                   <button
-                  type="button"
+                    type="button"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center space-x-3 p-1.5 rounded-full hover:bg-slate-100 transition-colors focus:outline-none"
                   >
@@ -137,8 +139,19 @@ export default function Navbar() {
                         <p className="text-xs text-slate-500">Signed in as</p>
                         <p className="text-sm font-semibold text-slate-900 truncate">{user.email}</p>
                       </div>
+
+                      {/* 2. Added Watchlist Link in User Dropdown */}
+                      <Link
+                        href="/watchlist"
+                        onClick={() => setDropdownOpen(false)}
+                        className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-100 transition-colors border-b border-slate-100"
+                      >
+                        <Bookmark className="w-4 h-4 text-emerald-600" />
+                        <span>My Watchlist</span>
+                      </Link>
+
                       <button
-                      type="button"
+                        type="button"
                         onClick={handleLogout}
                         className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
                       >
@@ -159,18 +172,18 @@ export default function Navbar() {
               ) : (
                 /* STATE 3: First-time visitor -> Show BOTH buttons */
                 <div className="flex items-center space-x-3">
-                    <Link
-                      href="/login"
-                      className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
-                    >
-                      Log In
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="px-4 py-2 text-sm font-semibold text-black bg-[#10B981] rounded-lg hover:bg-[#0f9b58] transition-all duration-200 shadow-sm"
-                    >
-                      Sign Up
-                    </Link>
+                  <Link
+                    href="/login"
+                    className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 text-sm font-semibold text-black bg-[#10B981] rounded-lg hover:bg-[#0f9b58] transition-all duration-200 shadow-sm"
+                  >
+                    Sign Up
+                  </Link>
                 </div>
               )
             )}
@@ -188,6 +201,99 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {isOpen && (
+        <div className="md:hidden px-6 pb-6 border-t border-slate-200 bg-slate-50">
+          <div className="space-y-4 pt-4">
+            {navLinks.map((link) =>
+              link.name === "Search" ? (
+                <button
+                  key={link.name}
+                  type="button"
+                  onClick={() => {
+                    setSearchOpen(true);
+                    setIsOpen(false);
+                  }}
+                  className="w-full text-left text-base font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-base font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                >
+                  {link.name}
+                </Link>
+              )
+            )}
+
+            <div className="pt-4 border-t border-slate-200">
+              {!loading ? (
+                user ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#10B981]/20 border border-[#10B981] flex items-center justify-center text-[#10B981] font-bold text-sm">
+                        {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{user.name}</p>
+                        <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/watchlist"
+                      onClick={() => setIsOpen(false)}
+                      className="block w-full rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                    >
+                      My Watchlist
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full rounded-lg px-4 py-3 text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 transition"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                ) : hasRegistered ? (
+                  <Link
+                    href="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full rounded-lg px-4 py-3 text-sm font-semibold text-black bg-[#10B981] hover:bg-[#0f9b58] transition"
+                  >
+                    Log In
+                  </Link>
+                ) : (
+                  <div className="space-y-3">
+                    <Link
+                      href="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="block w-full rounded-lg px-4 py-3 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/register"
+                      onClick={() => setIsOpen(false)}
+                      className="block w-full rounded-lg px-4 py-3 text-sm font-semibold text-black bg-[#10B981] hover:bg-[#0f9b58] transition"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )
+              ) : (
+                <div className="text-sm text-slate-500">Loading...</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <SearchBar isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </nav>
