@@ -67,9 +67,9 @@ export default function Navbar() {
 
           {/* Logo Brand */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#10B981] bg-transparent">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#CC5500] bg-transparent">
               <svg
-                className="w-5 h-5 text-[#10B981]"
+                className="w-6 h-6 text-[#CC5500]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -78,8 +78,8 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight">
-              Coin<span className="italic font-extrabold text-slate-900">Pulse</span>
+            <span className="text-2xl font-medium tracking-tight text-slate-900">
+              Coin<span className="font-medium text-slate-900">Pulse</span>
             </span>
           </Link>
 
@@ -94,7 +94,7 @@ export default function Navbar() {
                     type="button"
                     key={link.name}
                     onClick={() => setSearchOpen(true)}
-                    className="text-base font-medium transition-colors duration-200 text-slate-500 hover:text-slate-900 focus:outline-none"
+                    className="text-base font-medium transition-colors duration-200 text-slate-800 hover:text-slate-900 focus:outline-none"
                   >
                     {link.name}
                   </button>
@@ -105,7 +105,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`text-base font-medium transition-colors duration-200 hover:text-slate-900 ${isActive ? "text-slate-900 font-semibold" : "text-slate-500"
+                  className={`text-lg font-medium transition-colors duration-200 hover:text-[#E35335] ${isActive ? "text-[#EC5800] font-semibold" : "text-slate-800"
                     }`}
                 >
                   {link.name}
@@ -125,11 +125,11 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center space-x-3 p-1.5 rounded-full hover:bg-slate-100 transition-colors focus:outline-none"
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#10B981]/20 border border-[#10B981] flex items-center justify-center text-[#10B981] font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-[#EC5800] flex items-center justify-center text-white font-bold text-sm">
                       {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                     </div>
-                    <span className="text-sm font-medium text-slate-900">{user.name}</span>
-                    <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+                    <span className="text-lg font-medium text-slate-900">{user.name}</span>
+                    <ChevronDown className={`w-6 h-6 text-slate-600 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
                   </button>
 
                   {/* Profile Dropdown */}
@@ -165,7 +165,7 @@ export default function Navbar() {
                 /* STATE 2: Logged out BUT registered user -> Show ONLY Log In */
                 <Link
                   href="/login"
-                  className="px-5 py-2 text-sm font-semibold text-black bg-[#10B981] rounded-lg hover:bg-[#0f9b58] transition-all duration-200 shadow-sm"
+                  className="px-5 py-2 text-base font-semibold text-white bg-[#EC5800] rounded-md  transition-all duration-200 shadow-sm"
                 >
                   Log In
                 </Link>
@@ -174,13 +174,13 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                    className="px-4 py-2 text-base font-medium text-slate-700 hover:text-slate-900 transition-colors"
                   >
                     Log In
                   </Link>
                   <Link
                     href="/register"
-                    className="px-4 py-2 text-sm font-semibold text-black bg-[#10B981] rounded-lg hover:bg-[#0f9b58] transition-all duration-200 shadow-sm"
+                    className="px-4 py-2 text-base font-semibold text-white bg-[#EC5800] rounded-md  transition-all duration-200 shadow-sm"
                   >
                     Sign Up
                   </Link>
@@ -265,7 +265,7 @@ export default function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setIsOpen(false)}
-                    className="block w-full rounded-lg px-4 py-3 text-sm font-semibold text-black bg-[#10B981] hover:bg-[#0f9b58] transition"
+                    className="block w-full rounded-lg px-4 py-3 text-sm font-semibold text-white bg-[#EC5800] hover:bg-[#d44d00] transition"
                   >
                     Log In
                   </Link>

@@ -75,7 +75,7 @@ export default function ChartCard() {
   }, [selectedCoin, activeTimeframe]);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between max-h-[750px]">
+    <div className="bg-white rounded-2xl p-6 shadow-sm flex flex-col justify-between max-h-[750px]">
 
       {/* Chart Header with Dropdown & Timeframe selector */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -105,14 +105,15 @@ export default function ChartCard() {
         </div>
 
         {/* Timeframe Selector Buttons */}
-        <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-xl border border-slate-200">
+        <div className="flex items-center gap-1.5 bg-white p-3 rounded-xl border border-slate-200">
           {TIMEFRAMES.map((tf) => (
             <button
+            type="button"
               key={tf.label}
               onClick={() => setActiveTimeframe(tf.label)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTimeframe === tf.label
-                  ? "bg-[#10B981] text-black shadow-md font-bold"
-                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+              className={`px-3 py-2 text-base cursor-pointer font-semibold rounded-full transition-all ${activeTimeframe === tf.label
+                  ? "bg-[#4CBB17] text-white shadow-md font-bold"
+                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-50"
                 }`}
             >
               {tf.label}
@@ -132,8 +133,8 @@ export default function ChartCard() {
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#22C55E" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#009E60" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#009E60" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <XAxis dataKey="time" stroke="#64748B" fontSize={11} tickLine={false} />
@@ -157,7 +158,7 @@ export default function ChartCard() {
               <Area
                 type="monotone"
                 dataKey="price"
-                stroke="#22C55E"
+                stroke="#009E60"
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorPrice)"

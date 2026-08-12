@@ -59,11 +59,11 @@ export default function CoinDetailPage({ params }: { params: Promise<{ id: strin
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-500 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-base font-medium text-slate-700 transition"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Dashboard
           </Link>
-          <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold rounded-full uppercase">
+          <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-base font-semibold rounded-full uppercase">
             Rank #{coin.market_cap_rank || "N/A"}
           </span>
         </div>
@@ -76,20 +76,20 @@ export default function CoinDetailPage({ params }: { params: Promise<{ id: strin
             )}
             <div>
               <h1 className="text-3xl font-extrabold text-slate-900">{coin.name}</h1>
-              <span className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+              <span className="text-base font-semibold text-slate-500 uppercase tracking-wider">
                 {coin.symbol}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col md:items-end">
-            <span className="text-sm text-slate-500">Current Price</span>
+            <span className="text-base text-slate-500">Current Price</span>
             <div className="flex items-center gap-3 mt-1">
               <span className="text-3xl md:text-4xl font-mono font-bold">
                 ${marketData.current_price?.usd?.toLocaleString() ?? "N/A"}
               </span>
               <div
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${isPositive24h
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-base font-bold ${isPositive24h
                     ? "bg-green-500/10 text-green-400 border border-green-500/20"
                     : "bg-red-500/10 text-red-400 border border-red-500/20"
                   }`}
@@ -104,42 +104,42 @@ export default function CoinDetailPage({ params }: { params: Promise<{ id: strin
 
         {/* Key Market Metrics Table Grid */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900 mb-4">Market Overview</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-4">Market Overview</h2>
 
           <div className="divide-y divide-slate-200/60">
-            <div className="py-3.5 flex justify-between items-center text-sm">
-              <span className="text-slate-500">Market Capitalization</span>
-              <span className="font-mono font-medium text-slate-900">
+            <div className="py-3.5 flex justify-between items-center text-base">
+              <span className="text-slate-800 font-medium">Market Capitalization</span>
+              <span className="font-mono text-base font-medium text-slate-900">
                 ${marketData.market_cap?.usd?.toLocaleString() ?? "N/A"}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center text-sm">
-              <span className="text-slate-500">24h Trading Volume</span>
-              <span className="font-mono font-medium text-slate-700">
+            <div className="py-3.5 flex justify-between items-center text-base">
+              <span className="text-slate-800 font-medium">24h Trading Volume</span>
+              <span className="font-mono text-base font-medium text-slate-700">
                 ${marketData.total_volume?.usd?.toLocaleString() ?? "N/A"}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center text-sm">
-              <span className="text-slate-500">24h High / Low</span>
+            <div className="py-3.5 flex justify-between items-center text-base">
+              <span className="text-slate-800 font-medium">24h High / Low</span>
               <span className="font-mono font-medium">
-                <span className="text-green-400">${marketData.high_24h?.usd?.toLocaleString() ?? "N/A"}</span>
+                <span className="text-[#009E60] ">${marketData.high_24h?.usd?.toLocaleString() ?? "N/A"}</span>
                 <span className="text-slate-500 mx-2">/</span>
                 <span className="text-red-400">${marketData.low_24h?.usd?.toLocaleString() ?? "N/A"}</span>
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center text-sm">
-              <span className="text-slate-500">All-Time High (ATH)</span>
-              <span className="font-mono font-medium text-slate-700">
+            <div className="py-3.5 flex justify-between items-center text-base">
+              <span className="text-slate-800 font-medium">All-Time High (ATH)</span>
+              <span className="font-mono text-base font-medium text-slate-700">
                 ${marketData.ath?.usd?.toLocaleString() ?? "N/A"}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center text-sm">
-              <span className="text-slate-500">Circulating Supply</span>
-              <span className="font-mono font-medium text-slate-700">
+            <div className="py-3.5 flex justify-between items-center text-base">
+              <span className="text-slate-800 font-medium">Circulating Supply</span>
+              <span className="font-mono text-base font-medium text-slate-700">
                 {marketData.circulating_supply?.toLocaleString() ?? "N/A"} {coin.symbol?.toUpperCase()}
               </span>
             </div>

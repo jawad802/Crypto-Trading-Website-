@@ -96,7 +96,8 @@ export default function WatchlistPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-6 py-13">
+        
+        <div className="max-w-6xl mx-auto px-6 py-13 ">
             <Link
                 href="/"
                 className="flex items-center gap-2 text-base font-semibold text-slate-600 hover:text-emerald-600 transition-colors"
@@ -116,10 +117,10 @@ export default function WatchlistPage() {
 
             {watchlist.length === 0 ? (
                 <div className="p-12 text-center bg-white border border-slate-200 rounded-2xl shadow-sm">
-                    <p className="text-slate-500 mb-4">Your watchlist is currently empty.</p>
+                    <p className="text-slate-700 mb-4">Your watchlist is currently empty.</p>
                     <Link
                         href="/"
-                        className="inline-block px-5 py-2.5 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-600 transition-colors"
+                        className="inline-block px-5 py-2.5 bg-[#EC5800] text-white font-bold rounded-xl hover:bg-[#E35335] transition-colors"
                     >
                         Explore Cryptos
                     </Link>
@@ -147,10 +148,10 @@ export default function WatchlistPage() {
                                             </div>
                                         )}
                                         <div>
-                                            <Link href={`/coin/${item.coinId}`} className="font-bold text-slate-900 hover:text-emerald-600">
+                                            <Link href={`/coin/${item.coinId}`} className="font-bold text-lg text-slate-900 hover:text-emerald-600">
                                                 {item.coinName}
                                             </Link>
-                                            <p className="text-xs text-slate-400 uppercase font-medium">{item.coinSymbol}</p>
+                                            <p className="text-base text-slate-400 uppercase font-medium">{item.coinSymbol}</p>
                                         </div>
                                     </div>
 
@@ -170,10 +171,10 @@ export default function WatchlistPage() {
                                         <button
                                             type="button"
                                             onClick={() => handleRemove(item.coinId)}
-                                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                                            className="p-2 text-slate-400 cursor-pointer hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                                             title="Remove from watchlist"
                                         >
-                                            <Trash2 className="w-5 h-5" />
+                                            <Trash2 className="w-6 h-6" />
                                         </button>
                                     </div>
                                 </div>
